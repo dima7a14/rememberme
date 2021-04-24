@@ -1,6 +1,10 @@
 from django.db import models
 from django.urls import reverse
 import pycountry
+from datamuse import datamuse
+from translate import Translator
+
+datamuseAPI = datamuse.Datamuse()
 
 
 class Languages(models.Model):
@@ -30,6 +34,10 @@ class Translation(Languages, models.Model):
 
 
 class Phrase(Languages, models.Model):
+    SIMILAR_COUNT = 3
+
+    translator = Translator(to_lang="uk")  # TODO: use value from user.default_to_lang
+
     text = models.CharField(max_length=100)
     translations = models.ManyToManyField(Translation)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -46,6 +54,16 @@ class Phrase(Languages, models.Model):
 
     def get_absolute_url(self):
         return reverse("phrase_detail", args=[str(self.id)])
+
+    @property
+    def similar(self):
+        similar_words = datamuseAPI.words(ml=self.text, max=self.SIMILAR_COUNT)
+
+        return similar_words
+
+    @property
+    def auto_translation(self):
+        return self.translator.translate(self.text)
 
 
 class Mention(models.Model):

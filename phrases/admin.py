@@ -1,7 +1,6 @@
 from django.contrib import admin
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 from django.utils.html import format_html
-from django.utils.http import urlencode
 
 from .models import Phrase, Translation, Mention
 
@@ -14,9 +13,9 @@ def render_link(url: str, content: str) -> str:
 class PhraseAdmin(admin.ModelAdmin):
     list_display = ("text", "concat_translations", "created_at")
     search_fields = ("text", "translations__content")
-    readonly_fields = ("created_at", "updated_at")
+    readonly_fields = ("created_at", "updated_at", "similar", "auto_translation")
     ordering = ("created_at", "text")
-    fields = ("text", "language", "translations")
+    fields = ("text", "language", "similar", "translations", "auto_translation")
 
     def concat_translations(self, obj):
         translations = []
@@ -27,6 +26,9 @@ class PhraseAdmin(admin.ModelAdmin):
 
 
         return format_html("; ".join(translations))
+
+    def similar(self, obj):
+        return "; ".join([s.get("word") for s in obj.similar])
 
     concat_translations.short_description = "Translations"
 
