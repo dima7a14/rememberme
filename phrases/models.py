@@ -14,7 +14,7 @@ class Languages(models.Model):
 
     language = models.CharField(max_length=3,
                                 choices=LANGUAGES,
-                                default=DEFAULT_LANGUAGE)
+                                default=DEFAULT_LANGUAGE[0])
 
 
 class Translation(Languages, models.Model):
@@ -68,7 +68,7 @@ class Phrase(Languages, models.Model):
 
 class Mention(models.Model):
     content = models.TextField()
-    phrase = models.ForeignKey(Phrase, on_delete=models.CASCADE, null=True)
+    phrase = models.ForeignKey(Phrase, on_delete=models.CASCADE, null=True, related_name="mentions")
 
     class Meta:
         indexes = [models.Index(fields=["content"])]
