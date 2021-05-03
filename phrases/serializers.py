@@ -10,6 +10,15 @@ class TranslationSerializer(serializers.ModelSerializer):
         model = Translation
         fields = ("id", "content", "language")
 
+    def create(self, validated_data):
+        phrase_pk = validated_data.pop("phrase")
+        translation = Translation.objects.create(**validated_data)
+        phrase = Phrase.objects.get(pk=phrase_pk)
+
+        phrase.translations.add(translation)
+
+        return translation
+
 
 class MentionSerializer(serializers.ModelSerializer):
     class Meta:
