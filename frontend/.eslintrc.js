@@ -16,5 +16,17 @@ module.exports = {
   rules: {
     "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
     "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
+    "prettier/prettier": ["warn", {
+      "tabWidth": 2,
+      "useTabs": false,
+      "semi": true,
+      "trailingComma": "all",
+      "singleQuote": false
+    }, {
+      "usePrettierrc": true
+    }],
+    "@typescript-eslint/no-empty-function": ["warn", {
+      "allow": ["protected-constructors", "private-constructors"]
+    }]
   },
 };

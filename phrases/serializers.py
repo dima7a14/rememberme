@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from drf_spectacular.utils import extend_schema_field
 
 from .models import Phrase, Translation, Mention
 
@@ -35,5 +36,6 @@ class PhraseSerializer(serializers.ModelSerializer):
         model = Phrase
         fields = ("id", "text", "translations", "created_at", "updated_at", "similar", "auto_translation", "mentions")
 
+    @extend_schema_field(serializers.StringRelatedField(many=True))
     def get_similar(self, obj):
         return [item.get("word") for item in obj.similar]
